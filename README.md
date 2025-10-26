@@ -35,6 +35,24 @@ $ go build -o shell-history-mcp-server
 🚀 MCP Server is ready to use ! But how ?  
 If you try to run it directly `$ ./shell-history-mcp-server` process will run but nothing happens, and it's the expected behaviour.
 
+## Use @modelcontextprotocol/inspector to debug
+
+Package `@modelcontextprotocol/inspector` starts a WebUI to test directly your MCP server, test output based on provided input.
+
+### Requirements
+
+* Node
+
+### How to
+
+Start inspector as following
+
+```bash
+$ npx @modelcontextprotocol/inspector shell-history-mcp-server
+```
+
+Access WebUI at http://localhost:6274/?MCP_PROXY_AUTH_TOKEN=<GENERATED_TOKEN>
+
 ## Configure client using Cherry studio and Scaleway AI provider
 
 In this example we will use [Cherry Studio](https://github.com/CherryHQ/cherry-studio) as client and [model qwen3-235b-a22b-instruct-2507 from Scaleway provider](https://www.scaleway.com/en/docs/generative-apis/quickstart/). 
@@ -69,3 +87,4 @@ __🚀 Once Cherry studio let's give a try with a basic prompt, example: "Which 
 * Source Cherry studio: https://github.com/CherryHQ/cherry-studio
 * Source Scaleway AI (Generative API): https://www.scaleway.com/en/docs/generative-apis/quickstart/
 * Go MCP SDK: https://github.com/modelcontextprotocol/go-sdk/tree/main
+* MCP Inspector: https://modelcontextprotocol.io/docs/tools/inspector
