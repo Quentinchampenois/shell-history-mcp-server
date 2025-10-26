@@ -2,10 +2,20 @@
 
 __⚠️ Disclaimer: This project is only for discover and demo purpose, there is no active development planned. Furthermore, it is only for personal use because it exposes entire shell history and represents a very high confidentiality and security risk.__
 
+__💡I recommend to clear history before using it like: "history -c"__
+
 `shell-history-mcp-server` bridges your shell history and AI assistants using the Model Context Protocol (MCP). It reads shell commands from ZSH, then lets AI agents query them through structured function calls
 
 Functions:
 * `shell_history`: Returns shell history commands 
+
+## Examples
+
+Prompt:
+> On which project did I work today ?
+
+Output:
+- You should see a tool call to the Shell History before output is generated
 
 ## Getting started
 

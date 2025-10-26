@@ -7,19 +7,23 @@ import (
 	"log"
 	"os"
 	"shell-history-mcp-server/internal/shell"
+	"strings"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
 type Input struct {
-	Name string `json:"name" jsonschema:"the name of the shell command to find in history"`
+	Command   string `json:"command,omitempty" jsonschema:"Specify the command to search"`
+	Contains  string `json:"contains,omitempty" jsonschema:"Looks for any command containing this substring"` // any command with this substring
+	AfterTime int64  `json:"after_time,omitempty" jsonschema:"Browse history after this time"`                // Unix timestamp
+	Limit     int    `json:"limit,omitempty" jsonschema:"Limit the number of results to return"`
 }
 
 type Output struct {
 	Commands string `json:"commands" jsonschema:"the shell commands found in history"`
 }
 
-func GetShellHistory(ctx context.Context, req *mcp.CallToolRequest, _ Input) (
+func GetShellHistory(ctx context.Context, req *mcp.CallToolRequest, input Input) (
 	*mcp.CallToolResult,
 	Output,
 	error,
@@ -38,8 +42,33 @@ func GetShellHistory(ctx context.Context, req *mcp.CallToolRequest, _ Input) (
 		line := scanner.Text()
 		zshHistory := shell.NewZshHistory(line)
 
-		if zshHistory != nil {
-			cmds = append(cmds, *zshHistory)
+		// If zsh row does not match regexp, zshHistory will be nil
+		if zshHistory == nil {
+			continue
+		}
+
+		if input.Command != "" {
+			if len(zshHistory.Command) == 0 {
+				continue
+			}
+			// Match the first word of the command (e.g., "docker", "uv")
+			firstWord := strings.Fields(zshHistory.Command)[0]
+			if firstWord != input.Command {
+				continue
+			}
+		}
+
+		// Filter by contain if defined
+		if input.Contains != "" {
+			if !strings.Contains(zshHistory.Command, input.Contains) {
+				continue
+			}
+		}
+
+		cmds = append(cmds, *zshHistory)
+
+		if input.Limit > 0 && len(cmds) > input.Limit {
+			break
 		}
 	}
 
